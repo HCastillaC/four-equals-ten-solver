@@ -3,18 +3,23 @@
 
 using namespace std;
 
-void operate(int number[], int operation[])
+struct operations
 {
-    int operation_priority[3];
+    int sign; //0: +, 1: -, 2: *, 3: /
+    int priority;
+    bool done;
+};
 
+void operate(int number[], operations operation[])
+{
     for(int i = 0; i < 3; i++)
     {
-        if(operation[i] > 1) operation_priority[i] = 1;
-        else operation_priority[i] = 0;
+        if(operation[i].sign > 1) operation[i].priority = 1;
+        else operation[i].priority = 0;
     }
 }
 
-void calculate_operations(int number[], int operation[], int iteration)
+void calculate_operations(int number[], operations operation[], int iteration)
 {
     if(iteration == 3)
     {
@@ -24,7 +29,7 @@ void calculate_operations(int number[], int operation[], int iteration)
     {
         for(int i = 0; i < 4; i++)
         {
-            operation[iteration] = i;
+            operation[iteration].sign = i;
             calculate_operations(number, operation, iteration + 1);
         }
     }
@@ -35,10 +40,16 @@ void number_combinations(string remaining_numbers, string set_numbers)
     if(remaining_numbers == "")
     {
         int set_numbers_int[4];
-        int operation[3] = {0, 0, 0};
+        operations operation[3];
+        for(operations i: operation)
+        {
+            i.sign = 0;
+            i.priority = 0;
+            i.done = false;
+        }
+
         for(int i = 0; i < 4; i++) set_numbers_int[i] = set_numbers[i] - '0';
         calculate_operations(set_numbers_int, operation, 0);
-        cout << endl;
     }
     else
     {
