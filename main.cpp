@@ -3,12 +3,22 @@
 
 using namespace std;
 
+void operate(int number[], int operation[])
+{
+    int operation_priority[3];
+
+    for(int i = 0; i < 3; i++)
+    {
+        if(operation[i] > 1) operation_priority[i] = 1;
+        else operation_priority[i] = 0;
+    }
+}
+
 void calculate_operations(int number[], int operation[], int iteration)
 {
     if(iteration == 3)
     {
-        for(int i = 0; i < 3; i++) cout << operation[i];
-        cout << endl;
+        operate(number, operation);
     } 
     else
     {
