@@ -21,54 +21,87 @@ void operate(vector<double long> number, vector<operations> operation)
     vector<operations> operation_aux = operation;
     vector<double long> number_aux = number;
 
-    for(int priority_index = 3; priority_index > -1; priority_index--)
+    for(int parenthesis_index = 0; parenthesis_index < 6; parenthesis_index++)
     {
-        for(int operation_index = 0; operation_index < operation.size(); operation_index++)
+        switch(parenthesis_index)
         {
-            if(operation[operation_index].priority == priority_index)
-            {
-                switch(operation[operation_index].sign)
-                {
-                    case 0: 
-                        number[operation_index] += number[operation_index + 1]; 
-                        break;
-                    case 1: 
-                        number[operation_index] -= number[operation_index + 1]; 
-                        break;
-                    case 2: 
-                        number[operation_index] *= number[operation_index + 1]; 
-                        break;
-                    case 3: 
-                        if(number[operation_index + 1] == 0) break;
-                        else
-                        {
-                            number[operation_index] /= number[operation_index + 1]; 
-                            break;
-                        }
-                }
-                if(operation[operation_index].sign == 3 and number[operation_index + 1] == 0) break;
-                number.erase(number.begin() + operation_index + 1);
-                operation.erase(operation.begin() + operation_index);
-                operation_index--;
-            }
+            case 0: operation[0].priority += 2; 
+            case 1: operation[1].priority += 2; 
+            case 2: operation[2].priority += 2; break;
+            case 3: operation[0].priority += 2; 
+            case 4: operation[1].priority += 2; break;
+            case 5: operation[0].priority += 2; break;
         }
-    }
 
-    if(number[0] == 10 and number.size() == 1)
-    {
-        cout << number_aux[0];
-        for(int index = 0; index < 3; index++)
+        vector<operations> operation_aux2 = operation;
+
+        for(int priority_index = 3; priority_index > -1; priority_index--)
         {
-            switch(operation_aux[index].sign)
+            for(int operation_index = 0; operation_index < operation.size(); operation_index++)
             {
-                case 0: cout << " +"; break;
-                case 1: cout << " -"; break;
-                case 2: cout << " *"; break;
-                case 3: cout << " /"; break;
+                if(operation[operation_index].priority == priority_index)
+                {
+                    switch(operation[operation_index].sign)
+                    {
+                        case 0: 
+                            number[operation_index] += number[operation_index + 1]; 
+                            break;
+                        case 1: 
+                            number[operation_index] -= number[operation_index + 1]; 
+                            break;
+                        case 2: 
+                            number[operation_index] *= number[operation_index + 1]; 
+                            break;
+                        case 3: 
+                            if(number[operation_index + 1] == 0) break;
+                            else
+                            {
+                                number[operation_index] /= number[operation_index + 1]; 
+                                break;
+                            }
+                    }
+                    if(operation[operation_index].sign == 3 and number[operation_index + 1] == 0) break;
+                    number.erase(number.begin() + operation_index + 1);
+                    operation.erase(operation.begin() + operation_index);
+                    operation_index--;
+                }
             }
-            cout << " " << number_aux[index + 1];
         }
-        cout << " = 10" << endl;
+
+        if(number[0] == 10 and number.size() == 1)
+        {
+            bool already_done_flag = false;
+            if(operation_aux2[0].priority > 1 and parenthesis_index != 0)
+            {
+                cout << "(";
+                already_done_flag = true;
+            }
+            cout << number_aux[0];
+            for(int index = 0; index < 3; index++)
+            {
+                switch(operation_aux2[index].sign)
+                {
+                    case 0: cout << " +"; break;
+                    case 1: cout << " -"; break;
+                    case 2: cout << " *"; break;
+                    case 3: cout << " /"; break;
+                }
+                if(operation_aux2[index + 1].priority > 1 and !already_done_flag and parenthesis_index != 0)
+                {
+                    cout << " (" << number_aux[index + 1];
+                    already_done_flag = true;
+                }
+                else cout << " " << number_aux[index + 1];
+                if(operation_aux2[index + 1].priority < 2 and already_done_flag and parenthesis_index != 0)
+                {
+                    cout << ")";
+                    already_done_flag = false;
+                }
+            }
+            cout << " = 10" << endl;
+        }
+        operation = operation_aux;
+        number = number_aux;
     }
 }
 
