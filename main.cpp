@@ -3,6 +3,23 @@
 
 using namespace std;
 
+void checking_operations(string str_numbers)
+{
+    //Convert to array of ints
+    int numbers_int[4];
+    int i = 0;
+
+    for(char number_char: str_numbers)
+    {
+        int number_int = number_char - '0';
+        numbers_int[i] = number_int;
+        i++;
+    }
+
+    //
+
+}
+
 void backtracking(string remaining_numbers, string set_numbers)
 {
     if(remaining_numbers == "") cout << set_numbers << endl;
