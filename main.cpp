@@ -3,9 +3,33 @@
 
 using namespace std;
 
-void backtracking(string remaining_numbers, string set_numbers)
+void calculate_operations(int number[], int operation[], int iteration)
 {
-    if(remaining_numbers == "") cout << set_numbers << endl;
+    if(iteration == 3)
+    {
+        for(int i = 0; i < 3; i++) cout << operation[i];
+        cout << endl;
+    } 
+    else
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            operation[iteration] = i;
+            calculate_operations(number, operation, iteration + 1);
+        }
+    }
+}
+
+void number_combinations(string remaining_numbers, string set_numbers)
+{
+    if(remaining_numbers == "")
+    {
+        int set_numbers_int[4];
+        int operation[3] = {0, 0, 0};
+        for(int i = 0; i < 4; i++) set_numbers_int[i] = set_numbers[i] - '0';
+        calculate_operations(set_numbers_int, operation, 0);
+        cout << endl;
+    }
     else
     {
         for(int i = 0; i < remaining_numbers.size(); i++)
@@ -17,7 +41,7 @@ void backtracking(string remaining_numbers, string set_numbers)
             temp_remaining_numbers.erase(temp_remaining_numbers.begin() + i);
             temp_set_numbers += selected;
 
-            backtracking(temp_remaining_numbers, temp_set_numbers);
+            number_combinations(temp_remaining_numbers, temp_set_numbers);
         }
     }
 }
@@ -36,7 +60,7 @@ int main()
         input == '6' or input == '7' or input == '8' or input == '9') numbers += input;
     }
     
-    backtracking(numbers, "");
+    number_combinations(numbers, "");
 
     return 0;
 }
