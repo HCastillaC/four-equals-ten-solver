@@ -18,45 +18,30 @@ void operate(vector<double long> number, vector<operations> operation)
         else operation[i].priority = 0;
     }
 
+    vector<operations> operation_aux = operation;
+    vector<double long> number_aux = number;
+
     for(int priority_index = 3; priority_index > -1; priority_index--)
     {
         for(int operation_index = 0; operation_index < operation.size(); operation_index++)
         {
             if(operation[operation_index].priority == priority_index)
             {
-                cout << number[0];
-                for(int i = 0; i < 3; i++)
-                {
-                    switch(operation[i].sign)
-                    {
-                        case 0: cout << " +"; break;
-                        case 1: cout << " -"; break;
-                        case 2: cout << " *"; break;
-                        case 3: cout << " /"; break;
-                    }
-                    cout << " " << number[i + 1];
-                }
-                cout << endl;
-
                 switch(operation[operation_index].sign)
                 {
                     case 0: 
-                        cout << number[operation_index] << " + " << number[operation_index + 1] << endl;
                         number[operation_index] += number[operation_index + 1]; 
                         break;
                     case 1: 
-                        cout << number[operation_index] << " - " << number[operation_index + 1] << endl;
                         number[operation_index] -= number[operation_index + 1]; 
                         break;
                     case 2: 
-                        cout << number[operation_index] << " * " << number[operation_index + 1] << endl;
                         number[operation_index] *= number[operation_index + 1]; 
                         break;
                     case 3: 
                         if(number[operation_index + 1] == 0) break;
                         else
                         {
-                            cout << number[operation_index] << " / " << number[operation_index + 1] << endl;
                             number[operation_index] /= number[operation_index + 1]; 
                             break;
                         }
@@ -69,8 +54,22 @@ void operate(vector<double long> number, vector<operations> operation)
         }
     }
 
-    for(double long i: number) cout << i << "    ";
-    cout << endl << endl;
+    if(number[0] == 10 and number.size() == 1)
+    {
+        cout << number_aux[0];
+        for(int index = 0; index < 3; index++)
+        {
+            switch(operation_aux[index].sign)
+            {
+                case 0: cout << " +"; break;
+                case 1: cout << " -"; break;
+                case 2: cout << " *"; break;
+                case 3: cout << " /"; break;
+            }
+            cout << " " << number_aux[index + 1];
+        }
+        cout << " = 10" << endl;
+    }
 }
 
 void calculate_operations(vector<double long> number, vector<operations> operation, int iteration)
