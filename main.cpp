@@ -1,11 +1,136 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
-void backtracking(string remaining_numbers, string set_numbers)
+struct operations
 {
-    if(remaining_numbers == "") cout << set_numbers << endl;
+    int sign; //0: +, 1: -, 2: *, 3: /
+    int priority;
+};
+
+void operate(vector<double long> number, vector<operations> operation)
+{
+    for(int i = 0; i < 3; i++)
+    {
+        if(operation[i].sign > 1) operation[i].priority = 1;
+        else operation[i].priority = 0;
+    }
+
+    vector<operations> operation_aux = operation;
+    vector<double long> number_aux = number;
+
+    for(int parenthesis_index = 0; parenthesis_index < 6; parenthesis_index++)
+    {
+        switch(parenthesis_index)
+        {
+            case 0: operation[0].priority += 2; 
+            case 1: operation[1].priority += 2; 
+            case 2: operation[2].priority += 2; break;
+            case 3: operation[0].priority += 2; 
+            case 4: operation[1].priority += 2; break;
+            case 5: operation[0].priority += 2; break;
+        }
+
+        vector<operations> operation_aux2 = operation;
+
+        for(int priority_index = 3; priority_index > -1; priority_index--)
+        {
+            for(int operation_index = 0; operation_index < operation.size(); operation_index++)
+            {
+                if(operation[operation_index].priority == priority_index)
+                {
+                    switch(operation[operation_index].sign)
+                    {
+                        case 0: 
+                            number[operation_index] += number[operation_index + 1]; 
+                            break;
+                        case 1: 
+                            number[operation_index] -= number[operation_index + 1]; 
+                            break;
+                        case 2: 
+                            number[operation_index] *= number[operation_index + 1]; 
+                            break;
+                        case 3: 
+                            if(number[operation_index + 1] == 0) break;
+                            else
+                            {
+                                number[operation_index] /= number[operation_index + 1]; 
+                                break;
+                            }
+                    }
+                    if(operation[operation_index].sign == 3 and number[operation_index + 1] == 0) break;
+                    number.erase(number.begin() + operation_index + 1);
+                    operation.erase(operation.begin() + operation_index);
+                    operation_index--;
+                }
+            }
+        }
+
+        if(number[0] == 10 and number.size() == 1)
+        {
+            bool already_done_flag = false;
+            if(operation_aux2[0].priority > 1 and parenthesis_index != 0)
+            {
+                cout << "(";
+                already_done_flag = true;
+            }
+            cout << number_aux[0];
+            for(int index = 0; index < 3; index++)
+            {
+                switch(operation_aux2[index].sign)
+                {
+                    case 0: cout << " +"; break;
+                    case 1: cout << " -"; break;
+                    case 2: cout << " *"; break;
+                    case 3: cout << " /"; break;
+                }
+                if(operation_aux2[index + 1].priority > 1 and !already_done_flag and parenthesis_index != 0)
+                {
+                    cout << " (" << number_aux[index + 1];
+                    already_done_flag = true;
+                }
+                else cout << " " << number_aux[index + 1];
+                if(operation_aux2[index + 1].priority < 2 and already_done_flag and parenthesis_index != 0)
+                {
+                    cout << ")";
+                    already_done_flag = false;
+                }
+            }
+            cout << " = 10" << endl;
+        }
+        operation = operation_aux;
+        number = number_aux;
+    }
+}
+
+void calculate_operations(vector<double long> number, vector<operations> operation, int iteration)
+{
+    if(iteration == 3)
+    {
+        operate(number, operation);
+    } 
+    else
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            operation[iteration].sign = i;
+            calculate_operations(number, operation, iteration + 1);
+        }
+    }
+}
+
+void number_combinations(string remaining_numbers, string set_numbers)
+{
+    if(remaining_numbers == "")
+    {
+        vector<double long> set_numbers_int;
+        vector<operations> operation(3, {0, 0});
+
+        for(int i = 0; i < 4; i++) set_numbers_int.push_back(set_numbers[i] - '0');
+        calculate_operations(set_numbers_int, operation, 0);
+    }
     else
     {
         for(int i = 0; i < remaining_numbers.size(); i++)
@@ -17,7 +142,7 @@ void backtracking(string remaining_numbers, string set_numbers)
             temp_remaining_numbers.erase(temp_remaining_numbers.begin() + i);
             temp_set_numbers += selected;
 
-            backtracking(temp_remaining_numbers, temp_set_numbers);
+            number_combinations(temp_remaining_numbers, temp_set_numbers);
         }
     }
 }
@@ -36,7 +161,7 @@ int main()
         input == '6' or input == '7' or input == '8' or input == '9') numbers += input;
     }
     
-    backtracking(numbers, "");
+    number_combinations(numbers, "");
 
     return 0;
 }
