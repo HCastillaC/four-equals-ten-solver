@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -7,19 +8,72 @@ struct operations
 {
     int sign; //0: +, 1: -, 2: *, 3: /
     int priority;
-    bool done;
 };
 
-void operate(int number[], operations operation[])
+void operate(vector<double long> number, vector<operations> operation)
 {
     for(int i = 0; i < 3; i++)
     {
         if(operation[i].sign > 1) operation[i].priority = 1;
         else operation[i].priority = 0;
     }
+
+    for(int priority_index = 3; priority_index > -1; priority_index--)
+    {
+        for(int operation_index = 0; operation_index < operation.size(); operation_index++)
+        {
+            if(operation[operation_index].priority == priority_index)
+            {
+                cout << number[0];
+                for(int i = 0; i < 3; i++)
+                {
+                    switch(operation[i].sign)
+                    {
+                        case 0: cout << " +"; break;
+                        case 1: cout << " -"; break;
+                        case 2: cout << " *"; break;
+                        case 3: cout << " /"; break;
+                    }
+                    cout << " " << number[i + 1];
+                }
+                cout << endl;
+
+                switch(operation[operation_index].sign)
+                {
+                    case 0: 
+                        cout << number[operation_index] << " + " << number[operation_index + 1] << endl;
+                        number[operation_index] += number[operation_index + 1]; 
+                        break;
+                    case 1: 
+                        cout << number[operation_index] << " - " << number[operation_index + 1] << endl;
+                        number[operation_index] -= number[operation_index + 1]; 
+                        break;
+                    case 2: 
+                        cout << number[operation_index] << " * " << number[operation_index + 1] << endl;
+                        number[operation_index] *= number[operation_index + 1]; 
+                        break;
+                    case 3: 
+                        if(number[operation_index + 1] == 0) break;
+                        else
+                        {
+                            cout << number[operation_index] << " / " << number[operation_index + 1] << endl;
+                            number[operation_index] /= number[operation_index + 1]; 
+                            break;
+                        }
+                }
+                if(operation[operation_index].sign == 3 and number[operation_index + 1] == 0) break;
+                number.erase(number.begin() + operation_index + 1);
+                operation.erase(operation.begin() + operation_index);
+                operation_index--;
+            }
+        }
+    }
+
+    for(double long i: number) cout << i << "    ";
+    cout << endl << endl;
 }
 
-void calculate_operations(int number[], operations operation[], int iteration)
+void calculate_operations(vector<double long> number, vector<operations> operation, int iteration)
 {
     if(iteration == 3)
     {
@@ -39,16 +93,10 @@ void number_combinations(string remaining_numbers, string set_numbers)
 {
     if(remaining_numbers == "")
     {
-        int set_numbers_int[4];
-        operations operation[3];
-        for(operations i: operation)
-        {
-            i.sign = 0;
-            i.priority = 0;
-            i.done = false;
-        }
+        vector<double long> set_numbers_int;
+        vector<operations> operation(3, {0, 0});
 
-        for(int i = 0; i < 4; i++) set_numbers_int[i] = set_numbers[i] - '0';
+        for(int i = 0; i < 4; i++) set_numbers_int.push_back(set_numbers[i] - '0');
         calculate_operations(set_numbers_int, operation, 0);
     }
     else
