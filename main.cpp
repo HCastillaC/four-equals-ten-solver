@@ -162,6 +162,10 @@ int main()
     }
     
     number_combinations(numbers, "");
+    cout << endl;
+    cout << "Thanks for using the 4 = 10 Solver!" << endl;
+    cout << "Write something when you have checked the answer to exit the program" << endl;
+    cin >> input;
 
     return 0;
 }
