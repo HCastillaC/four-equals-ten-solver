@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -147,7 +149,7 @@ void number_combinations(string remaining_numbers, string set_numbers)
     }
 }
 
-int main()
+void input()
 {
     string numbers = "";
     char input;
@@ -163,9 +165,36 @@ int main()
     
     number_combinations(numbers, "");
     cout << endl;
-    cout << "Thanks for using the 4 = 10 Solver!" << endl;
-    cout << "Write something when you have checked the answer to exit the program" << endl;
-    cin >> input;
+}
+
+int main()
+{
+    char continues = 'y';
+
+    cout << "--------------------------------------" << endl;
+    this_thread::sleep_for(chrono::milliseconds(250));
+    cout << " Hugo C presents...                   " << endl;
+    this_thread::sleep_for(chrono::milliseconds(500));
+    cout << "                      4 = 10          " << endl;
+    this_thread::sleep_for(chrono::milliseconds(250));
+    cout << "                               Solver " << endl;
+    this_thread::sleep_for(chrono::milliseconds(250));
+    cout << "--------------------------------------" << endl;
+    this_thread::sleep_for(chrono::milliseconds(500));
+    cout << endl;
+
+    while(true)
+    {
+        cout << "Do you want to solve another puzzle (y / n): ";
+        cin >> continues;
+        if(continues == 'y') input();
+        else
+        {
+            cout << "Thanks for using the 4 = 10 Solver!" << endl;
+             this_thread::sleep_for(chrono::milliseconds(3000));
+            break;
+        }
+    }
 
     return 0;
 }
