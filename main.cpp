@@ -152,15 +152,18 @@ void number_combinations(string remaining_numbers, string set_numbers)
 void input()
 {
     string numbers = "";
-    char input;
+    string input;
 
     while(numbers.size() < 4)
     {
-        cout << "Input number " << numbers.size() + 1 << ": ";
+        cout << "Input the " << 4 - numbers.size() << " numbers remaining: ";
         cin >> input;
 
-        if(input == '0' or input == '1' or input == '2' or input == '3' or input == '4' or input == '5' or
-        input == '6' or input == '7' or input == '8' or input == '9') numbers += input;
+        for(int i = 0; i < input.size(); i++)
+        {
+            if(input[i] == '0' or input[i] == '1' or input[i] == '2' or input[i] == '3' or input[i] == '4' or input[i] == '5' or
+            input[i] == '6' or input[i] == '7' or input[i] == '8' or input[i] == '9') numbers += input[i];
+        }
     }
     
     number_combinations(numbers, "");
