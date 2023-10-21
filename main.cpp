@@ -12,7 +12,7 @@ struct operations
     int priority;
 };
 
-void operate(vector<double long> number, vector<operations> operation)
+void operate(vector<double long> number, vector<operations> operation, int& number_equalities)
 {
     for(int i = 0; i < 3; i++)
     {
@@ -73,6 +73,7 @@ void operate(vector<double long> number, vector<operations> operation)
         if(number[0] == 10 and number.size() == 1)
         {
             bool already_done_flag = false;
+            number_equalities++;
             if(operation_aux2[0].priority > 1 and parenthesis_index != 0)
             {
                 cout << "(";
@@ -107,23 +108,23 @@ void operate(vector<double long> number, vector<operations> operation)
     }
 }
 
-void calculate_operations(vector<double long> number, vector<operations> operation, int iteration)
+void calculate_operations(vector<double long> number, vector<operations> operation, int iteration, int& number_equalities)
 {
     if(iteration == 3)
     {
-        operate(number, operation);
+        operate(number, operation, number_equalities);
     } 
     else
     {
         for(int i = 0; i < 4; i++)
         {
             operation[iteration].sign = i;
-            calculate_operations(number, operation, iteration + 1);
+            calculate_operations(number, operation, iteration + 1, number_equalities);
         }
     }
 }
 
-void number_combinations(string remaining_numbers, string set_numbers)
+void number_combinations(string remaining_numbers, string set_numbers, int& number_equalities)
 {
     if(remaining_numbers == "")
     {
@@ -131,7 +132,7 @@ void number_combinations(string remaining_numbers, string set_numbers)
         vector<operations> operation(3, {0, 0});
 
         for(int i = 0; i < 4; i++) set_numbers_int.push_back(set_numbers[i] - '0');
-        calculate_operations(set_numbers_int, operation, 0);
+        calculate_operations(set_numbers_int, operation, 0, number_equalities);
     }
     else
     {
@@ -144,7 +145,7 @@ void number_combinations(string remaining_numbers, string set_numbers)
             temp_remaining_numbers.erase(temp_remaining_numbers.begin() + i);
             temp_set_numbers += selected;
 
-            number_combinations(temp_remaining_numbers, temp_set_numbers);
+            number_combinations(temp_remaining_numbers, temp_set_numbers, number_equalities);
         }
     }
 }
@@ -153,6 +154,7 @@ void input()
 {
     string numbers = "";
     string input;
+    int number_equalities = 0;
 
     while(numbers.size() < 4)
     {
@@ -166,7 +168,10 @@ void input()
         }
     }
     
-    number_combinations(numbers, "");
+    number_combinations(numbers, "", number_equalities);
+    cout << endl;
+    if(number_equalities == 1) cout << "There is 1 solution" << endl;
+    else cout << "There are " << number_equalities << " solutions" << endl;
     cout << endl;
 }
 
