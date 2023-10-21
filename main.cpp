@@ -151,7 +151,7 @@ void number_combinations(string remaining_numbers, string set_numbers, int& numb
     }
 }
 
-void input(string numbers)
+void input(string numbers, int& succeses)
 {
     int number_equalities = 0;
     bool is_succesful = false;
@@ -173,6 +173,8 @@ void input(string numbers)
         myfile << "\n";
         myfile << "\n";
         myfile.close();
+
+        if(is_succesful) succeses++;
     }
     else
     {
@@ -180,39 +182,30 @@ void input(string numbers)
         {
             aux_numbers = numbers;
             aux_numbers += i + '0';
-            input(aux_numbers);
+            input(aux_numbers, succeses);
         }
     }    
 }
 
 int main()
 {
-    char continues = 'y';
+    int succeses = 0;
 
     cout << "--------------------------------------" << endl;
-    this_thread::sleep_for(chrono::milliseconds(250));
     cout << " Hugo C presents...                   " << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
     cout << "                      4 = 10          " << endl;
-    this_thread::sleep_for(chrono::milliseconds(250));
     cout << "                               Solver " << endl;
-    this_thread::sleep_for(chrono::milliseconds(250));
     cout << "--------------------------------------" << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
     cout << endl;
 
-    while(true)
-    {
-        cout << "Do you want to solve another puzzle (y / n): ";
-        cin >> continues;
-        if(continues == 'y') input("");
-        else
-        {
-            cout << "Thanks for using the 4 = 10 Solver!" << endl;
-            this_thread::sleep_for(chrono::milliseconds(3000));
-            break;
-        }
-    }
+    input("", succeses);
+
+    cout << "Thanks for using the 4 = 10 Solver!" << endl;
+    fstream myfile;
+    myfile.open("solutions.txt", ios::out | ios::app);
+    myfile << "\n";
+    myfile << succeses << "combinations have at least one solution" << "\n";
+    myfile << "Which means " << succeses / 100 << "% of all combinations can be solved" << "\n";
 
     return 0;
 }
