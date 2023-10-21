@@ -150,29 +150,36 @@ void number_combinations(string remaining_numbers, string set_numbers, int& numb
     }
 }
 
-void input()
+void input(string numbers)
 {
-    string numbers = "";
-    string input;
     int number_equalities = 0;
+    bool is_succesful = false;
+    string aux_numbers;
 
-    while(numbers.size() < 4)
+    if(numbers.size() == 4)
     {
-        cout << "Input the " << 4 - numbers.size() << " numbers remaining: ";
-        cin >> input;
+        cout << numbers << endl;
 
-        for(int i = 0; i < input.size(); i++)
-        {
-            if(input[i] == '0' or input[i] == '1' or input[i] == '2' or input[i] == '3' or input[i] == '4' or input[i] == '5' or
-            input[i] == '6' or input[i] == '7' or input[i] == '8' or input[i] == '9') numbers += input[i];
-        }
-    }
+        number_combinations(numbers, "", number_equalities);
     
-    number_combinations(numbers, "", number_equalities);
-    cout << endl;
-    if(number_equalities == 1) cout << "There is 1 solution" << endl;
-    else cout << "There are " << number_equalities << " solutions" << endl;
-    cout << endl;
+        cout << endl;
+        if(number_equalities == 1) cout << "There is 1 solution" << endl;
+        else cout << "There are " << number_equalities << " solutions" << endl;
+        cout << endl;
+        if(number_equalities != 0) is_succesful = true; 
+        cout << "is_succesful = " << is_succesful << endl;
+        cout << endl;
+        this_thread::sleep_for(chrono::milliseconds(1000));
+    }
+    else
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            aux_numbers = numbers;
+            aux_numbers += i + '0';
+            input(aux_numbers);
+        }
+    }    
 }
 
 int main()
@@ -195,11 +202,11 @@ int main()
     {
         cout << "Do you want to solve another puzzle (y / n): ";
         cin >> continues;
-        if(continues == 'y') input();
+        if(continues == 'y') input("");
         else
         {
             cout << "Thanks for using the 4 = 10 Solver!" << endl;
-             this_thread::sleep_for(chrono::milliseconds(3000));
+            this_thread::sleep_for(chrono::milliseconds(3000));
             break;
         }
     }
