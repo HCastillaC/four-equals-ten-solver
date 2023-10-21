@@ -3,6 +3,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <fstream>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ struct operations
     int priority;
 };
 
-void operate(vector<double long> number, vector<operations> operation, int& number_equalities)
+void operate(vector<double long> number, vector<operations> operation, int& number_equalities, fstream& myfile)
 {
     for(int i = 0; i < 3; i++)
     {
@@ -76,55 +77,55 @@ void operate(vector<double long> number, vector<operations> operation, int& numb
             number_equalities++;
             if(operation_aux2[0].priority > 1 and parenthesis_index != 0)
             {
-                cout << "(";
+                myfile << "(";
                 already_done_flag = true;
             }
-            cout << number_aux[0];
+            myfile << number_aux[0];
             for(int index = 0; index < 3; index++)
             {
                 switch(operation_aux2[index].sign)
                 {
-                    case 0: cout << " +"; break;
-                    case 1: cout << " -"; break;
-                    case 2: cout << " *"; break;
-                    case 3: cout << " /"; break;
+                    case 0: myfile << " +"; break;
+                    case 1: myfile << " -"; break;
+                    case 2: myfile << " *"; break;
+                    case 3: myfile << " /"; break;
                 }
                 if(operation_aux2[index + 1].priority > 1 and !already_done_flag and parenthesis_index != 0)
                 {
-                    cout << " (" << number_aux[index + 1];
+                    myfile << " (" << number_aux[index + 1];
                     already_done_flag = true;
                 }
-                else cout << " " << number_aux[index + 1];
+                else myfile << " " << number_aux[index + 1];
                 if(operation_aux2[index + 1].priority < 2 and already_done_flag and parenthesis_index != 0)
                 {
-                    cout << ")";
+                    myfile << ")";
                     already_done_flag = false;
                 }
             }
-            cout << " = 10" << endl;
+            myfile << " = 10" << "\n";
         }
         operation = operation_aux;
         number = number_aux;
     }
 }
 
-void calculate_operations(vector<double long> number, vector<operations> operation, int iteration, int& number_equalities)
+void calculate_operations(vector<double long> number, vector<operations> operation, int iteration, int& number_equalities, fstream& myfile)
 {
     if(iteration == 3)
     {
-        operate(number, operation, number_equalities);
+        operate(number, operation, number_equalities, myfile);
     } 
     else
     {
         for(int i = 0; i < 4; i++)
         {
             operation[iteration].sign = i;
-            calculate_operations(number, operation, iteration + 1, number_equalities);
+            calculate_operations(number, operation, iteration + 1, number_equalities, myfile);
         }
     }
 }
 
-void number_combinations(string remaining_numbers, string set_numbers, int& number_equalities)
+void number_combinations(string remaining_numbers, string set_numbers, int& number_equalities, fstream& myfile)
 {
     if(remaining_numbers == "")
     {
@@ -132,7 +133,7 @@ void number_combinations(string remaining_numbers, string set_numbers, int& numb
         vector<operations> operation(3, {0, 0});
 
         for(int i = 0; i < 4; i++) set_numbers_int.push_back(set_numbers[i] - '0');
-        calculate_operations(set_numbers_int, operation, 0, number_equalities);
+        calculate_operations(set_numbers_int, operation, 0, number_equalities, myfile);
     }
     else
     {
@@ -145,7 +146,7 @@ void number_combinations(string remaining_numbers, string set_numbers, int& numb
             temp_remaining_numbers.erase(temp_remaining_numbers.begin() + i);
             temp_set_numbers += selected;
 
-            number_combinations(temp_remaining_numbers, temp_set_numbers, number_equalities);
+            number_combinations(temp_remaining_numbers, temp_set_numbers, number_equalities, myfile);
         }
     }
 }
@@ -158,18 +159,20 @@ void input(string numbers)
 
     if(numbers.size() == 4)
     {
-        cout << numbers << endl;
+        fstream myfile;
+        myfile.open("solutions.txt", ios::out | ios::app);
+        myfile << numbers << "\n";
 
-        number_combinations(numbers, "", number_equalities);
-    
-        cout << endl;
-        if(number_equalities == 1) cout << "There is 1 solution" << endl;
-        else cout << "There are " << number_equalities << " solutions" << endl;
-        cout << endl;
+        number_combinations(numbers, "", number_equalities, myfile);
+
+        myfile << "\n";
+        if(number_equalities == 1) myfile << "There is 1 solution" << "\n";
+        else myfile << "There are " << number_equalities << " solutions" << "\n";
         if(number_equalities != 0) is_succesful = true; 
-        cout << "is_succesful = " << is_succesful << endl;
-        cout << endl;
-        this_thread::sleep_for(chrono::milliseconds(1000));
+        myfile << "is_succesful = " << is_succesful << "\n";
+        myfile << "\n";
+        myfile << "\n";
+        myfile.close();
     }
     else
     {
