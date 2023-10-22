@@ -151,7 +151,7 @@ void number_combinations(string remaining_numbers, string set_numbers, int& numb
     }
 }
 
-void input(string numbers, int& succeses)
+void input(string numbers, int& succeses, int initial, int& total)
 {
     int number_equalities = 0;
     bool is_succesful = false;
@@ -160,7 +160,7 @@ void input(string numbers, int& succeses)
     if(numbers.size() == 4)
     {
         fstream myfile;
-        myfile.open("solutions.txt", ios::out | ios::app);
+        myfile.open("solutions-v2.txt", ios::out | ios::app);
         myfile << numbers << "\n";
 
         number_combinations(numbers, "", number_equalities, myfile);
@@ -175,21 +175,23 @@ void input(string numbers, int& succeses)
         myfile.close();
 
         if(is_succesful) succeses++;
+        total++;
     }
     else
     {
-        for(int i = 0; i < 10; i++)
-        {
-            aux_numbers = numbers;
-            aux_numbers += i + '0';
-            input(aux_numbers, succeses);
-        }
+      for(int i = initial; i < 10; i++)
+      {
+          aux_numbers = numbers;
+          aux_numbers += i + '0';
+          input(aux_numbers, succeses, i, total);
+      }
     }    
 }
 
 int main()
 {
     int succeses = 0;
+    int total = 0;
 
     cout << "--------------------------------------" << endl;
     cout << " Hugo C presents...                   " << endl;
@@ -198,14 +200,15 @@ int main()
     cout << "--------------------------------------" << endl;
     cout << endl;
 
-    input("", succeses);
+    input("", succeses, 0, total);
 
     cout << "Thanks for using the 4 = 10 Solver!" << endl;
     fstream myfile;
-    myfile.open("solutions.txt", ios::out | ios::app);
+    myfile.open("solutions-v2.txt", ios::out | ios::app);
     myfile << "\n";
-    myfile << succeses << "combinations have at least one solution" << "\n";
-    myfile << "Which means " << succeses / 100 << "% of all combinations can be solved" << "\n";
+    myfile << "There are " << total << " total combinations" << "\n";
+    myfile << succeses << " combinations have at least one solution" << "\n";
+    myfile << "Which means " << (succeses / total) * 100 << "% of all combinations can be solved" << "\n";
 
     return 0;
 }
